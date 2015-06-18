@@ -189,3 +189,54 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
 
 1. Stop and restart your server, and visit [http://localhost:3000/](http://localhost:3000/). Click link. Page is loading! Check server logs to see what that looks like as well.
 1. Commit
+
+#### User can see yarns in database listed on yarns index
+
+1. Add one skein of yarn to database through PostgreSQL CLI:
+  * `INSERT INTO yarns(name, colorway, weight, yardage, ounces, discontinued) VALUES ('Madeline Tosh Merino Light', 'Edison Bulb', 'fingering', 420, 3.5, false);`
+1. Change yarn index to loop through yarns:
+
+  ```
+  tbody
+    each yarn in yarns
+      tr
+        td= yarn.name
+        td= yarn.colorway
+        td= yarn.weight
+        td= yarn.yardage
+        td= yarn.ounces
+        td= yarn.discontinued ? "Discontinued" : ""
+  ```
+
+1. Pass yarns from `routes/yarns.js` file to view (`yarns` does not yet reference anything...)
+
+  ```
+  res.render('yarns/index', {yarns: yarns});
+  ```
+
+1. Add model 'app/models/yarn.js' with the following content:
+
+  ```
+  var bookshelf = require('../../bookshelf');
+
+  var Yarn = bookshelf.Model.extend({
+      tableName: 'yarns'
+  });
+
+  module.exports = Yarn;
+  ```
+
+1. Require model in the `routes/yarns.js` file:
+  * `var Yarn = require('../app/models/yarn');`
+1. Add Yarn query to route, saving result to `yarns`:
+
+  ```
+  router.get('/', function(req, res, next) {
+    Yarn.collection().fetch().then(function(yarns) {
+      res.render('yarns/index', {yarns: yarns.toJSON()});
+    });
+  });
+  ```
+
+1. Stop and restart your server, and visit [http://localhost:3000/yarns](http://localhost:3000/yarns).
+1. Commit
