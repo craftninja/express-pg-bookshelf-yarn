@@ -1,0 +1,25 @@
+extends ../layout
+
+block content
+  div(class="page-header")
+    div(class="pull-right")
+      a(href='/yarns/#{yarn.id}/edit' class="btn btn-warning") Edit
+      a(href='/yarns/#{yarn.id}/delete' class="btn btn-danger") Delete
+    h1= yarn.name
+
+  ol(class="breadcrumb")
+    li
+      a(href="/yarns") My Yarn Inventory
+    li(class="active")= yarn.name
+
+  dl(class="dl-horizontal")
+    dt Colorway
+    dd= yarn.colorway
+    dt Weight
+    dd= yarn.weight
+    dt Yardage
+    dd= yarn.yardage
+    dt Ounces
+    dd= yarn.ounces
+    dt Discontinued?
+    dd= yarn.discontinued ? "This is no longer in production" : "Still may be available"

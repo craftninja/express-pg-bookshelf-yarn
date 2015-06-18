@@ -18,7 +18,8 @@ block content
     tbody
       each yarn in yarns
         tr
-          td= yarn.name
+          td
+            a(href="/yarns/#{yarn.id}")= yarn.name
           td= yarn.colorway
           td= yarn.weight
           td= yarn.yardage

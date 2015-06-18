@@ -502,3 +502,62 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
 
 1. Restart server and verify functionality in browser
 1. Commit!
+
+#### User can visit yarn show page
+
+1. Change yarn name to link to yarn show page
+
+  ```
+  td
+    a(href="/yarns/#{yarn.id}")= yarn.name
+  ```
+
+1. Add show route in yarn routes
+
+  ```
+  router.get('/:id', function(req, res, next) {
+    new Yarn({id: req.params.id})
+    .fetch()
+    .then(function(yarn) {
+      res.render('yarns/show', {yarn: yarn.toJSON()});
+    });
+  });
+  ```
+
+1. Add yarn show page with following content:
+
+  ```
+  extends ../layout
+
+  block content
+    div(class="page-header")
+      div(class="pull-right")
+        a(href='/yarns/#{yarn.id}/edit' class="btn btn-warning") Edit
+        a(href='/yarns/#{yarn.id}/delete' class="btn btn-danger") Delete
+      h1= yarn.name
+
+    ol(class="breadcrumb")
+      li
+        a(href="/yarns") My Yarn Inventory
+      li(class="active")= yarn.name
+
+    dl(class="dl-horizontal")
+      dt Yarn content
+      dd= yarn.content
+      dt Width (inches)
+      dd= yarn.width_in_inches
+      dt Yardage Available
+      dd= yarn.yardage_available
+      dt Domestic or Imported
+      dd= yarn.domestic ? "Domestic" : "Imported"
+  ```
+
+1. Restart server and verify all functionality in browser. RESTfully CRUDtastic!
+1. Commit!
+
+### Ideas for expansion
+
+1. Yarns belong to a brand (and brands can have many yarns), and yarns have many colorways
+1. Yarns belong to patterns through project ideas
+1. Yarns have a wholesale and retail price (accurate to pennies)
+1. How would you go about making a "register" to take in quantities, calculate pricing, and ring people up? This would need to calculate tax and update inventory as well.

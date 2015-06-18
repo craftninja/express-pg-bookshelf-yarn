@@ -62,4 +62,12 @@ router.get('/:id/delete', function(req, res, next) {
   });
 });
 
+router.get('/:id', function(req, res, next) {
+  new Yarn({id: req.params.id})
+  .fetch()
+  .then(function(yarn) {
+    res.render('yarns/show', {yarn: yarn.toJSON()});
+  });
+});
+
 module.exports = router;
