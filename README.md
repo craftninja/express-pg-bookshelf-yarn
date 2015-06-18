@@ -258,3 +258,112 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
 
 1. Refresh index... you should see the font change. Bootstrap is now loading!
 1. Commit all bootstrap files, then commit the rest of the diffs
+
+#### User can add new yarns to inventory
+1. Add a new yarn button to yarn index:
+
+  ```
+  div(class='page-header')
+    a(href='/yarns/new' class='btn btn-success pull-right') Add New Yarn
+    h1 Yarn inventory
+  ```
+
+  * click it... see what happens...
+1. Add route to `routes/yarns.js`:
+
+  ```
+  router.get('/new', function(req, res, next) {
+    res.render('yarns/new');
+  });
+  ```
+
+  * Restart your server... click that button again... see what happens...
+
+1. Add `views/yarns/new.jade` with content:
+
+  ```
+  extends ../layout
+
+  block content
+    h1(class="page-header") New Yarn
+
+    ol(class="breadcrumb")
+      li
+        a(href="/yarns") My Yarn Inventory
+      li(class="active") New
+
+    form(action='/yarns' method='post' class='form-horizontal')
+
+      div(class='form-group')
+        label(class="col-md-2 control-label") Name
+        div(class='col-md-4')
+          input(type="text" name="yarn[name]" class='form-control')
+
+      div(class='form-group')
+        label(class="col-md-2 control-label") Colorway
+        div(class='col-md-4')
+          input(type="text" name="yarn[colorway]" class='form-control')
+
+      div(class="form-group")
+        label(class="col-md-2 control-label") Weight (in)
+        div(class="col-md-4")
+          select(name='yarn[weight]' class="form-control")
+            option(value="thread") thread
+            option(value="cobweb") cobweb
+            option(value="lace") lace
+            option(value="light fingering") light fingering
+            option(value="fingering") fingering
+            option(value="sport") sport
+            option(value="dk") dk
+            option(value="worsted") worsted
+            option(value="aran") aran
+            option(value="bulky") bulky
+            option(value="super bulky") super bulky
+
+      div(class="form-group")
+        label(class="col-md-2 control-label") Yardage
+        div(class="col-md-4")
+          input(type='number' name='yarn[yardage]' class="form-control")
+
+      div(class="form-group")
+        label(class="col-md-2 control-label") Ounces
+        div(class="col-md-4")
+          input(type='number' step=0.05 name='yarn[ounces]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-md-offset-2 col-md-4")
+          div(class="checkbox")
+          label Discontinued?
+            input(type='checkbox' name='yarn[discontinued]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-md-offset-2 col-md-4")
+          input(type='submit' name='commit' value='Add this yarn' class="btn btn-success")
+  ```
+
+  * what happens when you fill out the form and push submit button?
+
+1. Add route for creation of new yarn in `routes/yarns.js`:
+
+  ```
+  router.post('/', function(req, res, next) {
+    Yarn.forge({
+      name: req.body['yarn[name]'],
+      content: req.body['yarn[content]'],
+      width_in_inches: req.body['yarn[width_in_inches]'],
+      yardage_available: req.body['yarn[yardage_available]'],
+      domestic: req.body['yarn[domestic]']
+    })
+    .save()
+    .then(function(yarn) {
+      res.redirect('/yarns');
+    })
+    .catch(function(err) {
+      return console.error(err);
+    });
+  });
+  ```
+
+  * restart server (EVERY TIME you alter anything other than a view)
+1. Add a new Yarn through your beautifully styled form and BOOM.
+1. Commit

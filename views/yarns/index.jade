@@ -2,7 +2,9 @@ extends ../layout
 
 block content
 
-  h1(class='page-header') Yarn inventory
+  div(class='page-header')
+    a(href='/yarns/new' class='btn btn-success pull-right') Add New Yarn
+    h1 Yarn inventory
 
   table(class='table')
     thead

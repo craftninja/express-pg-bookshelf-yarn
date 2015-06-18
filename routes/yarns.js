@@ -8,4 +8,27 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/new', function(req, res, next) {
+  res.render('yarns/new');
+});
+
+router.post('/', function(req, res, next) {
+  Yarn.forge({
+    name: req.body['yarn[name]'],
+    colorway: req.body['yarn[colorway]'],
+    weight: req.body['yarn[weight]'],
+    yardage: req.body['yarn[yardage]'],
+    yardage: req.body['yarn[yardage]'],
+    ounces: req.body['yarn[ounces]'],
+    discontinued: req.body['yarn[discontinued]']
+  })
+  .save()
+  .then(function(yarn) {
+    res.redirect('/yarns');
+  })
+  .catch(function(err) {
+    return console.error(err);
+  });
+});
+
 module.exports = router;
