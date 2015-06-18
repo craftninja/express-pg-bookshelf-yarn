@@ -78,3 +78,65 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
   * `=# CREATE DATABASE yarn_app;`
 1. Restart server and refresh browser.
 1. Commit all the things (making sure that your `.env` file is still not being tracked by Git)
+
+#### Create migration and migrate
+
+1. `$ knex init`
+  * If knex is not installed, run `$ npm install knex -g` to install CLI
+  * This will create a `knexfile.js` in root of app. Require `.env` and alter export contents to only use PostgreSQL:
+
+  ```
+  require('./.env');
+
+  module.exports = {
+
+    development: {
+      client: 'pg',
+      connection: process.env.PG_CONNECTION_STRING
+    }
+
+  };
+  ```
+
+1. Create a migration template from the command line (this will use the file we just created with `$ knex init`):
+  * `$ knex migrate:make createYarn`
+  * Add the following to the `exports.up` code block to create the table:
+
+    ```
+    return knex.schema.createTable('yarns', function (table) {
+      table.increments();
+      table.string('name');
+      table.string('colorway');
+      table.enum('weight', [
+        'thread',
+        'cobweb',
+        'lace',
+        'light fingering',
+        'fingering',
+        'sport',
+        'dk',
+        'worsted',
+        'aran',
+        'bulky',
+        'super bulky']);
+      table.integer('yardage');
+      table.float('ounces');
+      table.boolean('discontinued');
+      table.timestamps();
+    });
+    ```
+
+  * And add this to the `exports.down` to drop the table in rollbacks:
+
+    ```
+    return knex.schema.dropTable('yarns');
+    ```
+
+1. Migrate any existing migrations (just the one created above in this case):
+  * `$ knex migrate:latest`
+  * Verify that the table has been created in PostgreSQL CLI:
+    * `=# \c yarn_app`
+    * `=# SELECT * FROM yarns;`
+    * You should see an empty table
+  * IF you ever need to rollback, `$ knex migrate:rollback`
+1. Commit
