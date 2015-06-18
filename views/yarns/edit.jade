@@ -1,0 +1,63 @@
+extends ../layout
+
+block content
+  h1(class="page-header") Edit #{yarn.name}
+
+  ol(class="breadcrumb")
+    li
+      a(href="/yarns") My Yarn Inventory
+    li
+      a(href="/yarns/#{yarn.id}")= yarn.name
+    li(class="active") Edit
+
+  form(action='/yarns/#{yarn.id}' method='post' class='form-horizontal')
+
+    div(class='form-group')
+      label(class="col-md-2 control-label") Name
+      div(class='col-md-4')
+        input(type="text" value=yarn.name name="yarn[name]" class='form-control')
+
+    div(class='form-group')
+      label(class="col-md-2 control-label") Colorway
+      div(class='col-md-4')
+        input(type="text" value=yarn.colorway name="yarn[colorway]" class='form-control')
+
+    div(class="form-group")
+      label(class="col-md-2 control-label") Weight (in)
+      div(class="col-md-4")
+        select(name='yarn[weight]' class="form-control")
+          option(value=yarn.weight selected)= yarn.weight
+          option(value="thread") thread
+          option(value="cobweb") cobweb
+          option(value="lace") lace
+          option(value="light fingering") light fingering
+          option(value="fingering") fingering
+          option(value="sport") sport
+          option(value="dk") dk
+          option(value="worsted") worsted
+          option(value="aran") aran
+          option(value="bulky") bulky
+          option(value="super bulky") super bulky
+
+    div(class="form-group")
+      label(class="col-md-2 control-label") Yardage
+      div(class="col-md-4")
+        input(type='number' value=yarn.yardage name='yarn[yardage]' class="form-control")
+
+    div(class="form-group")
+      label(class="col-md-2 control-label") Ounces
+      div(class="col-md-4")
+        input(type='number' step=0.05 value=yarn.ounces name='yarn[ounces]' class="form-control")
+
+    div(class="form-group")
+      div(class="col-md-offset-2 col-md-4")
+        div(class="checkbox")
+        label Discontinued?
+          if yarn.discontinued
+            input(type='checkbox' name='yarn[discontinued]' class="form-control" checked=yarn.discontinued)
+          else
+            input(type='checkbox' name='yarn[discontinued]' class="form-control")
+
+    div(class="form-group")
+      div(class="col-md-offset-2 col-md-4")
+        input(type='submit' name='commit' value='Update this yarn' class="btn btn-success")

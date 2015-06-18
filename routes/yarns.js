@@ -31,4 +31,27 @@ router.post('/', function(req, res, next) {
   });
 });
 
+router.get('/:id/edit', function(req, res, next) {
+  new Yarn({id: req.params.id})
+  .fetch()
+  .then(function(yarn) {
+    res.render('yarns/edit', {yarn: yarn.toJSON()});
+  });
+});
+
+router.post('/:id', function(req, res, next) {
+  new Yarn({
+    id: req.params.id,
+    name: req.body['yarn[name]'],
+    colorway: req.body['yarn[colorway]'],
+    weight: req.body['yarn[weight]'],
+    yardage: req.body['yarn[yardage]'],
+    yardage: req.body['yarn[yardage]'],
+    ounces: req.body['yarn[ounces]'],
+    discontinued: req.body['yarn[discontinued]']
+  }).save().then(function(yarn) {
+    res.redirect('/yarns');
+  });
+});
+
 module.exports = router;

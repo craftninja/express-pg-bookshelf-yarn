@@ -14,6 +14,7 @@ block content
       th Yardage
       th Ounces
       th
+      th
     tbody
       each yarn in yarns
         tr
@@ -23,3 +24,5 @@ block content
           td= yarn.yardage
           td= yarn.ounces
           td= yarn.discontinued ? "Discontinued" : ""
+          td
+            a(href="/yarns/#{yarn.id}/edit" class="btn btn-warning") Edit

@@ -367,3 +367,119 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
   * restart server (EVERY TIME you alter anything other than a view)
 1. Add a new Yarn through your beautifully styled form and BOOM.
 1. Commit
+
+#### User can update yarn inventory
+
+1. Add Edit button to yarn index
+
+  ```
+  td
+    a(href="/yarns/#{yarn.id}/edit" class="btn btn-warning") Edit
+  ```
+
+  * Be sure and add an additional `<th>` to match the <td>... check out the style without and with this additional '<th>'. What is the difference?
+  * Click the button. What are the error messages telling you?
+1. Add edit route to `routes/yarns.js`
+
+  ```
+  router.get('/:id/edit', function(req, res, next) {
+    new Yarn({id: req.params.id})
+    .fetch()
+    .then(function(yarn) {
+      res.render('yarns/edit', {yarn: yarn.toJSON()});
+    });
+  });
+  ```
+
+  * Restart server and click the edit button again. What are the error messages telling you now?
+1. Add edit view `views/yarns/edit.jade`:
+
+  ```
+  extends ../layout
+
+  block content
+    h1(class="page-header") Edit #{yarn.name}
+
+    ol(class="breadcrumb")
+      li
+        a(href="/yarns") My Yarn Inventory
+      li
+        a(href="/yarns/#{yarn.id}")= yarn.name
+      li(class="active") Edit
+
+    form(action='/yarns/#{yarn.id}' method='post' class='form-horizontal')
+
+      div(class='form-group')
+        label(class="col-md-2 control-label") Name
+        div(class='col-md-4')
+          input(type="text" value=yarn.name name="yarn[name]" class='form-control')
+
+      div(class='form-group')
+        label(class="col-md-2 control-label") Colorway
+        div(class='col-md-4')
+          input(type="text" value=yarn.colorway name="yarn[colorway]" class='form-control')
+
+      div(class="form-group")
+        label(class="col-md-2 control-label") Weight (in)
+        div(class="col-md-4")
+          select(name='yarn[weight]' class="form-control")
+            option(value=yarn.weight selected)= yarn.weight
+            option(value="thread") thread
+            option(value="cobweb") cobweb
+            option(value="lace") lace
+            option(value="light fingering") light fingering
+            option(value="fingering") fingering
+            option(value="sport") sport
+            option(value="dk") dk
+            option(value="worsted") worsted
+            option(value="aran") aran
+            option(value="bulky") bulky
+            option(value="super bulky") super bulky
+
+      div(class="form-group")
+        label(class="col-md-2 control-label") Yardage
+        div(class="col-md-4")
+          input(type='number' value=yarn.yardage name='yarn[yardage]' class="form-control")
+
+      div(class="form-group")
+        label(class="col-md-2 control-label") Ounces
+        div(class="col-md-4")
+          input(type='number' step=0.05 value=yarn.ounces name='yarn[ounces]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-md-offset-2 col-md-4")
+          div(class="checkbox")
+          label Discontinued?
+            if yarn.discontinued
+              input(type='checkbox' name='yarn[discontinued]' class="form-control" checked=yarn.discontinued)
+            else
+              input(type='checkbox' name='yarn[discontinued]' class="form-control")
+
+      div(class="form-group")
+        div(class="col-md-offset-2 col-md-4")
+          input(type='submit' name='commit' value='Update this yarn' class="btn btn-success")
+  ```
+
+  * Note we added a breadcrumb for a show page... we will implement this later
+  * Fill it out and click the submit button. What is happening?
+1. Add an update route:
+
+  ```
+  router.post('/:id', function(req, res, next) {
+    new Yarn({
+      id: req.params.id,
+      name: req.body['yarn[name]'],
+      colorway: req.body['yarn[colorway]'],
+      weight: req.body['yarn[weight]'],
+      yardage: req.body['yarn[yardage]'],
+      yardage: req.body['yarn[yardage]'],
+      ounces: req.body['yarn[ounces]'],
+      discontinued: req.body['yarn[discontinued]']
+    }).save().then(function(yarn) {
+      res.redirect('/yarns');
+    });
+  });
+  ```
+
+1. Restart server, and verify functionality in browser
+1. Commit!
