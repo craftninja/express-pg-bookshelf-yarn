@@ -483,3 +483,22 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
 
 1. Restart server, and verify functionality in browser
 1. Commit!
+
+#### User can delete yarns from inventory
+
+1. Add delete button on yarns index
+  * `a(href="/yarns/#{yarn.id}/delete" class="btn btn-danger") Delete`
+1. Add delete route to yarns routes
+
+  ```
+  router.get('/:id/delete', function(req, res, next) {
+    new Yarn({id: req.params.id})
+    .destroy()
+    .then(function(yarn) {
+      res.redirect('/yarns');
+    });
+  });
+  ```
+
+1. Restart server and verify functionality in browser
+1. Commit!

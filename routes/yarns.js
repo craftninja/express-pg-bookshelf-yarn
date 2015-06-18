@@ -54,4 +54,12 @@ router.post('/:id', function(req, res, next) {
   });
 });
 
+router.get('/:id/delete', function(req, res, next) {
+  new Yarn({id: req.params.id})
+  .destroy()
+  .then(function(yarn) {
+    res.redirect('/yarns');
+  });
+});
+
 module.exports = router;
