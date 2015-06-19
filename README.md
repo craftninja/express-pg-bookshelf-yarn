@@ -555,6 +555,18 @@ Imagine that you need to do end of year inventory for your yarn store, Elegant P
 1. Restart server and verify all functionality in browser. RESTfully CRUDtastic!
 1. Commit!
 
+#### Deploy to Heroku
+
+1. Heroku uses the default environmental variable `DATABASE_URL` for the postgres connection string. Let's change our app to use this, and only load `.env` if that environmental variable isn't present.
+  * `.env`
+  * `.env.example`
+  * `bookshelf.js`
+  * `app.js`: `process.env.DATABASE_URL || require('./.env')`
+  * `knexfile.js`: `process.env.DATABASE_URL || require('./.env')`
+  * Restart your server and make sure app is still functional
+1. Create a Heroku app, add the Heroku Postgres add-on, and add the SSH URL to your local app. Commit and push your code.
+1. `$ heroku run knex migrate:latest`
+
 ### Ideas for expansion
 
 1. Yarns belong to a brand (and brands can have many yarns), and yarns have many colorways
